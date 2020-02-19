@@ -4,6 +4,7 @@ import { MapsComponent } from '../../pages/maps/maps.component';
 
 export const AdminLayoutRoutes: Routes = [   
 
-    { path: 'maps',           component: MapsComponent },
+    { path: 'maps',  pathMatch: 'full',         component: MapsComponent },
+    {path: '**', redirectTo: 'maps'}
     
 ];
