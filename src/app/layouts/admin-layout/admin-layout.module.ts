@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 import { AdminLayoutRoutes } from './admin-layout.routing';
 
-import { MapsComponent } from '../../pages/maps/maps.component';
+import { MapComponent } from '../../pages/map/map.component';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -17,7 +17,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     NgbModule
   ],
   declarations: [
-    MapsComponent,
+    MapComponent,
   ]
 })
 
