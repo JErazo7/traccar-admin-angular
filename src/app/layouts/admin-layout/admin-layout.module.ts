@@ -8,13 +8,19 @@ import { AdminLayoutRoutes } from './admin-layout.routing';
 import { MapComponent } from '../../pages/map/map.component';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { MarkerService } from '../../services/marker.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule.forChild(AdminLayoutRoutes),
     FormsModule,
-    NgbModule
+    NgbModule,
+    HttpClientModule
+  ],
+  providers: [
+    MarkerService
   ],
   declarations: [
     MapComponent,
