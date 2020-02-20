@@ -1,24 +1,21 @@
 import {SelectionModel} from '@angular/cdk/collections';
 import {Component} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
+import {ViewChild } from '@angular/core';
+ import { MatDialog, MatTable } from '@angular/material';
+
+ 
 
 export interface PeriodicElement {
     name: string;
-    state: number;
+    state: string;
   }
   
   
 const ELEMENT_DATA: PeriodicElement[] = [
-    {name: 'Hydrogen', state: 1.0079, },
-    {name: 'Helium', state: 4.0026, },
-    {name: 'Lithium', state: 6.941, },
-    {name: 'Beryllium', state: 9.0122,},
-    {name: 'Boron', state: 10.811, },
-    {name: 'Carbon', state: 12.0107, },
-    {name: 'Nitrogen', state: 14.0067, },
-    {name: 'Oxygen', state: 15.9994, },
-    {name: 'Fluorine', state: 18.9984, },
-    { name: 'Neon', state: 20.1797, },
+    {name: 'Buseta 1', state: 'on', },
+    {name: 'Buseta 2', state: 'on', },
+    {name: 'Buseta 3', state: 'off', },
   ];
   
 @Component({
@@ -28,7 +25,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 
 export class SidebarComponent {
-    displayedColumns: string[] = ['select', 'name', 'state'];
+    displayedColumns: string[] = ['select', 'name', 'state','action'];
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
   selection = new SelectionModel<PeriodicElement>(true, []);
 
@@ -53,4 +50,5 @@ export class SidebarComponent {
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row `;
   }
+  
 }
