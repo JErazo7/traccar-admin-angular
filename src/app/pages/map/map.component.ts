@@ -19,7 +19,8 @@ export class MapComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.initMap()
-    this.traccarService._getCookie()
+    const subscription = this.traccarService.getCookie()
+    .subscribe(cookie => alert(cookie));
     
   }
 
