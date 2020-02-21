@@ -1,5 +1,10 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, Injectable } from '@angular/core';
+import { TraccarService } from '../../services/traccar.service'
 import * as L from 'leaflet';
+
+@Injectable({
+  providedIn: 'root'
+})
 
 @Component({
   selector: 'app-map',
@@ -10,10 +15,12 @@ export class MapComponent implements AfterViewInit {
 
   private map;
 
-  constructor() { }
+  constructor(protected traccarService: TraccarService) { }
 
   ngAfterViewInit(): void {
     this.initMap()
+    this.traccarService._getCookie()
+    
   }
 
   private initMap(): void {

@@ -8,7 +8,7 @@ import { AdminLayoutRoutes } from './admin-layout.routing';
 import { MapComponent } from '../../pages/map/map.component';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { MarkerService } from '../../services/marker.service';
+import {TraccarService} from '../../services/traccar.service';
 import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
@@ -20,7 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule
   ],
   providers: [
-    MarkerService
+    TraccarService
   ],
   declarations: [
     MapComponent,
