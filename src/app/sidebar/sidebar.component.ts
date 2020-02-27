@@ -29,6 +29,9 @@ export class SidebarComponent {
         (data)=>{
           this.dataSource = data
         })
+    this.traccarService.getPositions.asObservable().subscribe(data=>{
+      
+    })    
   }
   
   openDialog(action,obj) {

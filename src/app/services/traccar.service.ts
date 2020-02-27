@@ -3,6 +3,7 @@ import { HttpClient,HttpResponse, HttpHeaders, HttpParams} from '@angular/common
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 import { Device } from '../models/device';
+import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 
 const auth = 'Basic am9zdWVAZ21haWwuY29tOjEyMzQ1Ng=='
 
@@ -11,8 +12,10 @@ const auth = 'Basic am9zdWVAZ21haWwuY29tOjEyMzQ1Ng=='
 })
 
 export class TraccarService {
-    public baseUrl: string;
+    public baseUrl: string
     public _cookie: string
+    public getPositions:  WebSocketSubject<Position[]>
+
     httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -22,6 +25,7 @@ export class TraccarService {
     
   constructor(private http: HttpClient) { 
     this.baseUrl = "http://demo4.traccar.org"
+    this.getPositions = webSocket('ws://demo4.traccar.org/api/socket')
    }
 
    public getDevices(): Observable<Device[]>{ 
