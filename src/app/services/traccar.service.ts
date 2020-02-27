@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient,HttpResponse, HttpHeaders, HttpParams} from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { retry, catchError } from 'rxjs/operators';
+import { Device } from '../models/device';
 
 const auth = 'Basic am9zdWVAZ21haWwuY29tOjEyMzQ1Ng=='
 
@@ -17,13 +18,25 @@ export class TraccarService {
     this.baseUrl = "http://demo4.traccar.org"
    }
 
-   public getCookie(): Observable<string>{
-     
-    return this.http.get(this.baseUrl+'/api/devices', {observe: 'response', headers: {Authorization: auth}})
+   public getDevices(): Observable<Device[]>{ 
+    return this.http
+    .get<Device[]>(this.baseUrl+'/api/devices', {headers: {Authorization: auth}})
     .pipe(
-      map(response => {
-        return JSON.stringify(response);
-      })
+      retry(1),
+      catchError(this.errorHandl)
     );
    }
+
+   errorHandl(error) {
+    let errorMessage = "";
+    if (error.error instanceof ErrorEvent) {
+      // Get client-side error
+      errorMessage = error.error.message;
+    } else {
+      // Get server-side error
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    console.log(errorMessage);
+    return throwError(errorMessage);
+  }
 }

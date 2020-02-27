@@ -3,18 +3,9 @@ import {Component} from '@angular/core';
 import {ViewChild } from '@angular/core';
 import { MatDialog, MatTable } from '@angular/material';
 import { DialogBoxComponent } from './dialog-box/dialog-box.component';
+import { TraccarService } from 'app/services/traccar.service';
+import { Device } from 'app/models/device';
  
-export interface Dispositivos {
-    name: string;
-    state: string;
-  }
-  
-  const ELEMENT_DATA: Dispositivos[] = [
-    {name: 'Bus 1', state:'on'},
-    {name: 'Bus 2',state:'on'},
-    {name: 'Bus 3',state:'on'},
-    {name: 'Bus 4',state:'off'}
-  ];
 @Component({
     moduleId: module.id,
     selector: 'sidebar-cmp',
@@ -22,16 +13,24 @@ export interface Dispositivos {
 })
 
 export class SidebarComponent {
-  dispositivos: Dispositivos[];
-  displayedColumns: string[] = ['name', 'state','action'];
+
+  displayedColumns: string[] = ['name', 'status','action'];
   
-  dataSource = ELEMENT_DATA;
-  selection = new SelectionModel<Dispositivos>(true, []);
+  dataSource: Device[];
+  selection = new SelectionModel<Device>(true, []);
 
   @ViewChild(MatTable,{static:true}) table: MatTable<any>;
 
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog, protected traccarService: TraccarService) {}
 
+  ngOnInit() {
+    this.traccarService.getDevices()
+      .subscribe(
+        (data)=>{
+          this.dataSource = data
+        })
+  }
+  
   openDialog(action,obj) {
     obj.action = action;
     const dialogRef = this.dialog.open(DialogBoxComponent, {
@@ -51,12 +50,7 @@ export class SidebarComponent {
   }
  
   addRowData(row_obj){
-    console.log(row_obj)
-    this.dataSource.push({
-      name:row_obj.name,
-      state: 'on'
-    });
-    this.table.renderRows();    
+        
   }
 
   updateRowData(row_obj){
