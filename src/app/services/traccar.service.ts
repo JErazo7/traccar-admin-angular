@@ -13,6 +13,12 @@ const auth = 'Basic am9zdWVAZ21haWwuY29tOjEyMzQ1Ng=='
 export class TraccarService {
     public baseUrl: string;
     public _cookie: string
+    httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization':'Basic am9zdWVAZ21haWwuY29tOjEyMzQ1Ng=='
+      })
+    };
     
   constructor(private http: HttpClient) { 
     this.baseUrl = "http://demo4.traccar.org"
@@ -20,7 +26,34 @@ export class TraccarService {
 
    public getDevices(): Observable<Device[]>{ 
     return this.http
-    .get<Device[]>(this.baseUrl+'/api/devices', {headers: {Authorization: auth}})
+    .get<Device[]>(this.baseUrl+'/api/devices', {headers: this.httpOptions.headers})
+    .pipe(
+      retry(1),
+      catchError(this.errorHandl)
+    );
+   }
+
+   public createDevice(device): Observable<Device>{ 
+    return this.http
+    .post<Device>(this.baseUrl+'/api/devices', JSON.stringify(device), {headers: this.httpOptions.headers})
+    .pipe(
+      retry(1),
+      catchError(this.errorHandl)
+    );
+   }
+
+   public updateDevice(device): Observable<Device>{ 
+    return this.http
+    .put<Device>(this.baseUrl+'/api/devices/'+device.id, JSON.stringify(device), {headers: this.httpOptions.headers})
+    .pipe(
+      retry(1),
+      catchError(this.errorHandl)
+    );
+   }
+
+   public deleteDevice(id): Observable<Device>{ 
+    return this.http
+    .delete<Device>(this.baseUrl+'/api/devices/'+id, {headers: this.httpOptions.headers})
     .pipe(
       retry(1),
       catchError(this.errorHandl)

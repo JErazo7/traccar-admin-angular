@@ -49,21 +49,34 @@ export class SidebarComponent {
     });
   }
  
-  addRowData(row_obj){
-        
+  addRowData(device){
+    this.traccarService.createDevice(device)
+    .subscribe((data)=>{
+      this.dataSource.push(data) 
+      this.table.renderRows()     
+    })
   }
 
-  updateRowData(row_obj){
-    this.dataSource = this.dataSource.filter((value,key)=>{
-      if(value.name == row_obj.name){
-        value.name = row_obj.name;
-      }
-      return true;
-    });
+  updateRowData(device){
+    this.traccarService.updateDevice(device)
+    .subscribe((data)=>{
+      this.dataSource = this.dataSource.filter((value,key)=>{
+        if(value.id == data.id){
+          value.name = data.name,
+          value.status = data.status,
+          value.uniqueId = data.uniqueId
+        }
+        return true;
+      });
+    })
   }
-  deleteRowData(row_obj){
-    this.dataSource = this.dataSource.filter((value,key)=>{
-      return value.name != row_obj.name;
-    });
+  deleteRowData(device){
+    this.traccarService.deleteDevice(device.id)
+    .subscribe(()=>{
+      this.dataSource = this.dataSource.filter((value,key)=>{
+        return value.id != device.id;
+      });
+    })
+    
   }
 }

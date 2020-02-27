@@ -1,5 +1,6 @@
 import { Component, Inject, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Device } from 'app/models/device';
 
 export interface Dispositivos {
   name: string;
@@ -25,7 +26,7 @@ export class DialogBoxComponent {
   }
  
   doAction(){
-    this.dialogRef.close({event:this.action,data:this.local_data});
+    this.dialogRef.close({event:this.action,data:new Device(this.local_data)});
   }
  
   closeDialog(){
