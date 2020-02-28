@@ -14,7 +14,7 @@ const auth = 'Basic am9zdWVAZ21haWwuY29tOjEyMzQ1Ng=='
 export class TraccarService {
     public baseUrl: string
     public _cookie: string
-    public getPositions:  WebSocketSubject<Position[]>
+    public getPositions:  WebSocketSubject<Map<String, any>>
 
     httpOptions = {
       headers: new HttpHeaders({
