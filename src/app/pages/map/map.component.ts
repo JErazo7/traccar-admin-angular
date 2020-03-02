@@ -17,15 +17,15 @@ export class MapComponent implements AfterViewInit, OnInit {
 
   private map;
 
-  private readonly markers: {[deviceId: string]: L.Marker} = {};
+  private readonly markers: {[deviceId: string]: L.Marker, name: string}={name} ;
 
   constructor(protected traccarService: TraccarService) { }
-  
+
   ngOnInit(): void {
     this.initMap()
   }
   ngAfterViewInit(): void {
-    
+
     this.traccarService.getPositions.asObservable()
     .pipe(
       filter(response => 'positions' in response),
@@ -33,13 +33,34 @@ export class MapComponent implements AfterViewInit, OnInit {
     )
     .subscribe(positions=>{
       positions.forEach(p => {
+        console.log(this.markers)
         if(!(p.deviceId in this.markers)) {
           this.markers[p.deviceId] = L.marker([p.latitude, p.longitude]).addTo(this.map);
         }else {
           this.markers[p.deviceId].setLatLng(L.latLng(p.latitude, p.longitude));
         }
       });
+    },error=>{
+      console.log('Ha fallado la conexion para obtener posiciones')
     })
+
+    this.traccarService.getPositions.asObservable()
+    .pipe(
+      filter(response => 'devices' in response),
+      map(response => response['devices'])
+    )
+    .subscribe(devices=>{
+      devices.forEach(p => {
+        console.log(this.markers)
+        if(p.id in this.markers) {
+          this.markers.name = p.name
+          this.markers[p.id].bindPopup(p.name).openPopup();
+        }
+      });
+    }, error=>{
+      console.log('Ha fallado la conexion para obtener dispositivos')
+    })
+
   }
 
   private initMap(): void {
