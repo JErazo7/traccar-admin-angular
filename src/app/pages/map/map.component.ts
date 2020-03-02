@@ -4,9 +4,12 @@ import * as L from 'leaflet';
 import { filter, map } from 'rxjs/operators';
 import { Position } from 'app/models/position';
 
-@Injectable({
-  providedIn: 'root'
-})
+interface MarkerPosition{
+  name:string;
+  marker: L.Marker
+}
+
+
 
 @Component({
   selector: 'app-map',
@@ -17,7 +20,7 @@ export class MapComponent implements AfterViewInit, OnInit {
 
   private map;
 
-  private readonly markers: {[deviceId: string]: L.Marker, name: string}={name} ;
+  private readonly markers: {[deviceId: string]: MarkerPosition}={} ;
 
   constructor(protected traccarService: TraccarService) { }
 
@@ -33,11 +36,10 @@ export class MapComponent implements AfterViewInit, OnInit {
     )
     .subscribe(positions=>{
       positions.forEach(p => {
-        console.log(this.markers)
         if(!(p.deviceId in this.markers)) {
-          this.markers[p.deviceId] = L.marker([p.latitude, p.longitude]).addTo(this.map);
+          this.markers[p.deviceId] = {name: null, marker: L.marker([p.latitude, p.longitude]).bindPopup('').addTo(this.map)};
         }else {
-          this.markers[p.deviceId].setLatLng(L.latLng(p.latitude, p.longitude));
+          this.markers[p.deviceId].marker.setLatLng(L.latLng(p.latitude, p.longitude));
         }
       });
     },error=>{
@@ -51,10 +53,13 @@ export class MapComponent implements AfterViewInit, OnInit {
     )
     .subscribe(devices=>{
       devices.forEach(p => {
-        console.log(this.markers)
-        if(p.id in this.markers) {
-          this.markers.name = p.name
-          this.markers[p.id].bindPopup(p.name).openPopup();
+        if(!(p.id in this.markers)) {
+          this.markers[p.id] = {name: p.name, marker: null};
+        }
+        this.markers[p.id].name = p.name;
+        if(this.markers[p.id].marker !== null) {
+
+          this.markers[p.id].marker._popup.setContent(p.name);
         }
       });
     }, error=>{
@@ -72,7 +77,6 @@ export class MapComponent implements AfterViewInit, OnInit {
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
-
     tiles.addTo(this.map);
   }
 
