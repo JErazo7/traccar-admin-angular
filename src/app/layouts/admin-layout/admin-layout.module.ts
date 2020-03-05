@@ -9,7 +9,6 @@ import { MapComponent } from '../../pages/map/map.component';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {TraccarService} from '../../services/traccar.service';
-import {MarkerService} from '../../services/marker.service'
 import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
@@ -21,8 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule
   ],
   providers: [
-    TraccarService,
-    MarkerService
+    TraccarService
   ],
   declarations: [
     MapComponent,
