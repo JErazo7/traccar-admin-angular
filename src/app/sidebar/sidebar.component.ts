@@ -5,7 +5,7 @@ import { MatDialog, MatTable } from '@angular/material';
 import { DialogBoxComponent } from './dialog-box/dialog-box.component';
 import { TraccarService } from 'app/services/traccar.service';
 import { Device } from 'app/models/device';
- 
+
 @Component({
     moduleId: module.id,
     selector: 'sidebar-cmp',
@@ -14,8 +14,8 @@ import { Device } from 'app/models/device';
 
 export class SidebarComponent {
 
-  displayedColumns: string[] = ['name', 'status','action'];
-  
+  displayedColumns: string[] = ['name','action'];
+
   dataSource: Device[];
   selection = new SelectionModel<Device>(true, []);
 
@@ -28,16 +28,16 @@ export class SidebarComponent {
       .subscribe(
         (data)=>{
           this.dataSource = data
-        })    
+        })
   }
-  
+
   openDialog(action,obj) {
     obj.action = action;
     const dialogRef = this.dialog.open(DialogBoxComponent, {
       width: '250px',
       data:obj
     });
- 
+
     dialogRef.afterClosed().subscribe(result => {
       if(result.event == 'Crear'){
         this.addRowData(result.data);
@@ -48,12 +48,12 @@ export class SidebarComponent {
       }
     });
   }
- 
+
   addRowData(device){
     this.traccarService.createDevice(device)
     .subscribe((data)=>{
-      this.dataSource.push(data) 
-      this.table.renderRows()     
+      this.dataSource.push(data)
+      this.table.renderRows()
     })
   }
 
@@ -77,6 +77,6 @@ export class SidebarComponent {
         return value.id != device.id;
       });
     })
-    
+
   }
 }

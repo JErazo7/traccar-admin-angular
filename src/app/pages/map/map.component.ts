@@ -4,8 +4,8 @@ import * as L from 'leaflet';
 import { filter, map } from 'rxjs/operators';
 import { Position } from 'app/models/position';
 
-interface MarkerPosition{
-  name:string;
+interface MarkerPosition {
+  name: string;
   marker: L.Marker
 }
 
@@ -20,7 +20,7 @@ export class MapComponent implements AfterViewInit, OnInit {
 
   private map;
 
-  private readonly markers: {[deviceId: string]: MarkerPosition}={} ;
+  private readonly markers: { [deviceId: string]: MarkerPosition } = {};
 
   constructor(protected traccarService: TraccarService) { }
 
@@ -29,41 +29,42 @@ export class MapComponent implements AfterViewInit, OnInit {
   }
   ngAfterViewInit(): void {
 
-    this.traccarService.getPositions.asObservable()
-    .pipe(
-      filter(response => 'positions' in response),
-      map(response => response['positions'])
-    )
-    .subscribe(positions=>{
-      positions.forEach(p => {
-        if(!(p.deviceId in this.markers)) {
-          this.markers[p.deviceId] = {name: null, marker: L.marker([p.latitude, p.longitude]).bindPopup('').addTo(this.map)};
-        }else {
-          this.markers[p.deviceId].marker.setLatLng(L.latLng(p.latitude, p.longitude));
-        }
-      });
-    },error=>{
-      console.log('Ha fallado la conexion para obtener posiciones')
-    })
+
 
     this.traccarService.getPositions.asObservable()
-    .pipe(
-      filter(response => 'devices' in response),
-      map(response => response['devices'])
-    )
-    .subscribe(devices=>{
-      devices.forEach(p => {
-        if(!(p.id in this.markers)) {
-          this.markers[p.id] = {name: p.name, marker: null};
-        }
-        this.markers[p.id].name = p.name;
-        if(this.markers[p.id].marker !== null) {
-          this.markers[p.id].marker._popup.setContent(p.name);
-        }
-      });
-    }, error=>{
-      console.log('Ha fallado la conexion para obtener dispositivos')
-    })
+      .pipe(
+        filter(response => 'devices' in response),
+        map(response => response['devices'])
+      )
+      .subscribe(devices => {
+        devices.forEach(p => {
+          if (!(p.id in this.markers)) {
+            this.markers[p.id] = { name: p.name, marker: L.marker([0, 0]).bindPopup('Desconectado').addTo(this.map) };
+          }
+          this.markers[p.id].name = p.name;
+          this.traccarService.getPositions.asObservable()
+            .pipe(
+              filter(response => 'positions' in response),
+              map(response => response['positions'])
+            )
+            .subscribe(positions => {
+              positions.forEach(p => {
+                if (p.deviceId in this.markers) {
+                  this.markers[p.deviceId].marker.setLatLng(L.latLng(p.latitude, p.longitude));
+                }
+              });
+            }, error => {
+              console.log('Ha fallado la conexion para obtener posiciones')
+            })
+          if (this.markers[p.id].marker !== null && p.status !== 'unknown') {
+            this.markers[p.id].marker._popup.setContent(p.name);
+          } else {
+            this.markers[p.id].marker._popup.setContent('Desconectado');
+          }
+        });
+      }, error => {
+        console.log('Ha fallado la conexion para obtener dispositivos')
+      })
 
   }
 
