@@ -39,9 +39,13 @@ export class MapComponent implements AfterViewInit, OnInit {
       .subscribe(devices => {
         devices.forEach(p => {
           if (!(p.id in this.markers)) {
-            this.markers[p.id] = { name: p.name, marker: L.marker([0, 0]).bindPopup('Desconectado').addTo(this.map) };
+            this.markers[p.id] = { name: p.name, marker: L.marker([0, 0]).bindPopup(p.name+': desconectado').addTo(this.map) };
           }
-          this.markers[p.id].name = p.name;
+          if (p.status !== 'unknown') {
+            this.markers[p.id].marker._popup.setContent(p.name)
+          } else {
+            this.markers[p.id].marker._popup.setContent(p.name+': desconectado');
+          }
           this.traccarService.getPositions.asObservable()
             .pipe(
               filter(response => 'positions' in response),
@@ -49,18 +53,12 @@ export class MapComponent implements AfterViewInit, OnInit {
             )
             .subscribe(positions => {
               positions.forEach(p => {
-                if (p.deviceId in this.markers) {
-                  this.markers[p.deviceId].marker.setLatLng(L.latLng(p.latitude, p.longitude));
-                }
+                this.markers[p.deviceId].marker.setLatLng(L.latLng(p.latitude, p.longitude));
               });
             }, error => {
               console.log('Ha fallado la conexion para obtener posiciones')
             })
-          if (this.markers[p.id].marker !== null && p.status !== 'unknown') {
-            this.markers[p.id].marker._popup.setContent(p.name);
-          } else {
-            this.markers[p.id].marker._popup.setContent('Desconectado');
-          }
+
         });
       }, error => {
         console.log('Ha fallado la conexion para obtener dispositivos')
