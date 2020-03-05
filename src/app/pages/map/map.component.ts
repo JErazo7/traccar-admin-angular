@@ -58,7 +58,6 @@ export class MapComponent implements AfterViewInit, OnInit {
         }
         this.markers[p.id].name = p.name;
         if(this.markers[p.id].marker !== null) {
-
           this.markers[p.id].marker._popup.setContent(p.name);
         }
       });

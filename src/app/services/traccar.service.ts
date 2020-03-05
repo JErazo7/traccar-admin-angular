@@ -19,16 +19,16 @@ export class TraccarService {
     httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization':'Basic am9zdWVAZ21haWwuY29tOjEyMzQ1Ng=='
+        'Authorization':'Basic YWRtaW46YWRtaW4='
       })
     };
-    
-  constructor(private http: HttpClient) { 
-    this.baseUrl = "http://demo4.traccar.org"
-    this.getPositions = webSocket('ws://demo4.traccar.org/api/socket')
+
+  constructor(private http: HttpClient) {
+    this.baseUrl = "http://167.172.155.28"
+    this.getPositions = webSocket('ws://167.172.155.28/api/socket')
    }
 
-   public getDevices(): Observable<Device[]>{ 
+   public getDevices(): Observable<Device[]>{
     return this.http
     .get<Device[]>(this.baseUrl+'/api/devices', {headers: this.httpOptions.headers})
     .pipe(
@@ -37,7 +37,7 @@ export class TraccarService {
     );
    }
 
-   public createDevice(device): Observable<Device>{ 
+   public createDevice(device): Observable<Device>{
     return this.http
     .post<Device>(this.baseUrl+'/api/devices', JSON.stringify(device), {headers: this.httpOptions.headers})
     .pipe(
@@ -46,7 +46,7 @@ export class TraccarService {
     );
    }
 
-   public updateDevice(device): Observable<Device>{ 
+   public updateDevice(device): Observable<Device>{
     return this.http
     .put<Device>(this.baseUrl+'/api/devices/'+device.id, JSON.stringify(device), {headers: this.httpOptions.headers})
     .pipe(
@@ -55,7 +55,7 @@ export class TraccarService {
     );
    }
 
-   public deleteDevice(id): Observable<Device>{ 
+   public deleteDevice(id): Observable<Device>{
     return this.http
     .delete<Device>(this.baseUrl+'/api/devices/'+id, {headers: this.httpOptions.headers})
     .pipe(
